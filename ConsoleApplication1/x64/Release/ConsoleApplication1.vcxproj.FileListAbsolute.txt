@@ -1,0 +1,2 @@
+Y:\vs_project\ConsoleApplication1\x64\Release\ConsoleApplication1.exe
+Y:\LocalRepository\PPL_Windows_Server\ConsoleApplication1\x64\Release\ConsoleApplication1.exe
