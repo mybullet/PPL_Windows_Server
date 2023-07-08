@@ -1,2 +1,2 @@
 # PPL_Windows_Server
-A repo for PPL_Windows_Server。
+20230708 add ci/de
