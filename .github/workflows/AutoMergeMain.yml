@@ -1,0 +1,35 @@
+name: Auto Merge Dev to Main
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Create Pull Request
+        id: create_pr
+        run: |
+          GITHUB_TOKEN="${{ secrets.MY_GITHUB_TOKEN }}"
+          BASE_URL="https://api.github.com/repos/${{ github.repository }}"
+          PR_URL=$(curl -X POST -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" $BASE_URL/pulls -d '{
+            "title": "Merge dev to main",
+            "body": "Automatically generated pull request to merge dev branch to main branch",
+            "head": "dev",
+            "base": "main"
+          }' | jq -r '.html_url')
+          echo "::set-output name=pull-request-url::$PR_URL"
+
+      - name: Merge Pull Request
+        run: |
+          GITHUB_TOKEN="${{ secrets.MY_GITHUB_TOKEN }}"
+          PR_URL="${{ steps.create_pr.outputs.pull-request-url }}"
+          PR_NUMBER=$(basename $PR_URL)
+          API_URL="https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/merge"
+          curl -X PUT -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" $API_URL
